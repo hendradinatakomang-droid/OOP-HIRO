@@ -1,8 +1,13 @@
 public class Student {
-    // Variabel bawaan class (Constant)
+    // Constants
     public static final int CURRENT_YEAR = 2026;
+    public static final int MAX_STUDENTS = 10;
 
-    // Instance variables (Data milik setiap objek)
+    // Shared storage (static = belongs to the class)
+    private static Student[] students = new Student[MAX_STUDENTS];
+    private static int count = 0;
+
+    // Data of each student object
     private String name;
     private String id;
     private String major;
@@ -10,25 +15,26 @@ public class Student {
     private double gpa;
 
     // CONSTRUCTORS
-    // Konstruktor 1: Tanpa parameter
+
+    // Constructor 1: no parameters
     public Student() {
-        this.name = "Belum Diisi";
+        this.name = "Not Set";
         this.id = "-";
-        this.major = "Belum Dipilih";
+        this.major = "Undeclared";
         this.birthYear = 2000;
         this.gpa = 0.0;
     }
 
-    // Konstruktor 2: Nama dan ID saja
+    // Constructor 2: name and ID only
     public Student(String name, String id) {
         this.name = name;
         this.id = id;
-        this.major = "Belum Dipilih";
+        this.major = "Undeclared";
         this.birthYear = 2000;
         this.gpa = 0.0;
     }
 
-    // Konstruktor 3: Parameter lengkap
+    // Constructor 3: full data
     public Student(String name, String id, String major, int birthYear, double gpa) {
         this.name = name;
         this.id = id;
@@ -36,57 +42,137 @@ public class Student {
         this.birthYear = birthYear;
         this.gpa = gpa;
     }
+    
+    // Update name
+    public void updateName(String name) {
+        this.name = name;
+    }
 
     // METHOD OVERLOADING
-    // Overload 1: Ubah jurusan
+
+    // Overload 1: update major
     public void updateData(String major) {
         this.major = major;
     }
 
-    // Overload 2: Ubah IPK
+    // Overload 2: update GPA
     public void updateData(double gpa) {
-        if (gpa >= 0.0 && gpa <= 4.0) {
+        if (isValidGpa(gpa)) {
             this.gpa = gpa;
+        } else {
+            System.out.println("Error: GPA must be between 0 and 4. GPA was not changed.");
         }
     }
 
-    // Overload 3: Ubah jurusan dan IPK
+    // Overload 3: update major and GPA
     public void updateData(String major, double gpa) {
         this.major = major;
-        this.gpa = gpa;
+        updateData(gpa);
     }
 
     // RETURN METHODS
-    // Menghitung umur
+
+    // Returns the age
     public int getAge() {
         return CURRENT_YEAR - birthYear;
     }
 
-    // Tentukan status IPK
+    // Returns the GPA status as text
     public String getGpaStatus() {
         if (gpa >= 3.5) {
-            return "Sangat Memuaskan (Cum Laude)";
+            return "Excellent (Cum Laude)";
         } else if (gpa >= 3.0) {
-            return "Memuaskan";
+            return "Good";
         } else {
-            return "Perlu Perbaikan";
+            return "Needs Improvement";
         }
     }
 
-    // Cek apakah Cum Laude (mengembalikan nilai boolean)
+    // Returns true or false
     public boolean isCumLaude() {
         return gpa >= 3.5;
     }
 
-    // METHOD MENAMPILKAN DATA
+    // SHOW ONE STUDENT
+
     public void showData(String title) {
         System.out.println("\n=== " + title + " ===");
-        System.out.println("Nama Mahasiswa : " + name);
-        System.out.println("NIM / ID       : " + id);
-        System.out.println("Program Studi  : " + major);
-        System.out.println("Usia           : " + getAge() + " Tahun");
-        System.out.println("IPK            : " + gpa);
-        System.out.println("Status IPK     : " + getGpaStatus());
-        System.out.println("Cum Laude      : " + isCumLaude());
+        System.out.println("Name       : " + name);
+        System.out.println("Student ID : " + id);
+        System.out.println("Major      : " + major);
+        System.out.println("Age        : " + getAge() + " years");
+        System.out.println("GPA        : " + gpa);
+        System.out.println("GPA Status : " + getGpaStatus());
+        System.out.println("Cum Laude  : " + isCumLaude());
+    }
+
+    // STATIC METHODS: VALIDATION
+
+    public static boolean isValidId(String id) {
+        return id.length() > 0 && id.length() <= 10;
+    }
+
+    public static boolean isValidGpa(double gpa) {
+        return gpa >= 0.0 && gpa <= 4.0;
+    }
+
+    public static boolean isValidBirthYear(int birthYear) {
+        return birthYear >= 1950 && birthYear <= CURRENT_YEAR;
+    }
+
+    // STATIC METHODS: MANAGE DATA
+
+    // Add a student (returns false if the storage is full)
+    public static boolean insert(Student student) {
+        if (count >= MAX_STUDENTS) {
+            return false;
+        }
+        students[count] = student;
+        count++;
+        return true;
+    }
+
+    // Find the position of a student by ID (-1 if not found)
+    public static int findIndex(String id) {
+        for (int i = 0; i < count; i++) {
+            if (students[i].id.equals(id)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    // Get a student by ID (null if not found)
+    public static Student getStudent(String id) {
+        int index = findIndex(id);
+        if (index == -1) {
+            return null;
+        }
+        return students[index];
+    }
+
+    // Delete a student
+    public static boolean delete(String id) {
+        int index = findIndex(id);
+        if (index == -1) {
+            return false;
+        }
+        for (int i = index; i < count - 1; i++) {
+            students[i] = students[i + 1];
+        }
+        students[count - 1] = null;
+        count--;
+        return true;
+    }
+
+    // Show all students
+    public static void showAll() {
+        if (count == 0) {
+            System.out.println("\nNo student data yet.");
+            return;
+        }
+        for (int i = 0; i < count; i++) {
+            students[i].showData("STUDENT " + (i + 1));
+        }
     }
 }
