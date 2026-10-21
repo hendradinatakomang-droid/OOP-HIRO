@@ -9,7 +9,7 @@ public class Student {
     private int birthYear;
     private double gpa;
 
-    // ================= 1. CONSTRUCTORS =================
+    // CONSTRUCTORS
     // Konstruktor 1: Tanpa parameter
     public Student() {
         this.name = "Belum Diisi";
@@ -37,7 +37,7 @@ public class Student {
         this.gpa = gpa;
     }
 
-    // ================= 2. METHOD OVERLOADING =================
+    // METHOD OVERLOADING
     // Overload 1: Ubah jurusan
     public void updateData(String major) {
         this.major = major;
@@ -56,7 +56,7 @@ public class Student {
         this.gpa = gpa;
     }
 
-    // ================= 3. RETURN METHODS =================
+    // RETURN METHODS
     // Menghitung umur
     public int getAge() {
         return CURRENT_YEAR - birthYear;
@@ -78,8 +78,7 @@ public class Student {
         return gpa >= 3.5;
     }
 
-    // ================= 4. METHOD MENAMPILKAN DATA =================
-    // Menggunakan System.out.println biasa
+    // METHOD MENAMPILKAN DATA
     public void showData(String title) {
         System.out.println("\n=== " + title + " ===");
         System.out.println("Nama Mahasiswa : " + name);
