@@ -1,7 +1,6 @@
 import java.util.Scanner;
 
 public class Main {
-    // One Scanner shared by all methods
     static Scanner input = new Scanner(System.in);
 
     public static void main(String[] args) {
@@ -35,7 +34,6 @@ public class Main {
     }
 
     // MENU
-
     static void showMenu() {
         System.out.println("\nSTUDENT DATA MENU");
         System.out.println("1. Add data");
@@ -114,7 +112,6 @@ public class Main {
     }
 
     // INPUT HELPERS
-
     static String readText(String prompt) {
         System.out.print(prompt);
         return input.nextLine();
